@@ -1,3 +1,12 @@
+
+#--------------------------------------------------------------------------------------#
+# Autor: OSCAR J. O. AYALA
+# 
+# conecte-se comigo no likedin www.linkedin.com/in/oscar-dataanalysis-datascience
+# para usar este material, faça referência a mim
+#--------------------------------------------------------------------------------------#
+
+
 # limpar objetos
 rm(list = ls())
 
