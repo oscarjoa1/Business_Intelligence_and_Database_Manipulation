@@ -4,4 +4,4 @@ O conjunto de dados em questão é fornecido pelo DSA. Refere-se à venda de aut
 
 ## Resultado 
 
-O dashboard resultado da solução se encontra no arquivo *03_dashboarVendas_Carros.jpg*
+O dashboard resultado da solução se encontra nos arquivos *02_solution.pbix* e *03_dashboarVendas_Carros.jpg*
