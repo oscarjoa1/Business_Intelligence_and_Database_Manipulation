@@ -1,4 +1,13 @@
 
+
+#------------------------------------------------------------------------------#
+# Oscar J. O. Ayala
+# Para fazer uso deste material me referencie
+# Me siga no linkedln: linkedin.com/in/oscar-dataanalysis-datascience
+#------------------------------------------------------------------------------#
+
+
+
 # apagar variaveis
 rm(list = ls())
 
@@ -41,7 +50,7 @@ mycols <- readr::cols_only(ID_Pedido = col_character(),
                            Prioridade = col_character())
 
 
-# importacao 
+# exportacao 
 dat <- readr::read_csv2(file = "dataset.csv",
                         col_types = mycols,
                         locale = locale(decimal_mark = ","))
