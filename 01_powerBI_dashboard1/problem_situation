@@ -1,8 +1,0 @@
-O conjunto de dados em questão é fornecido pelo DSA.
-Refere-se à venda de automóveis de uma empresa anônima, na qual constam a data da venda, fabricante, local, fabricante,
-custo de entrega, valor de vendas, curso de vendas e informação dpo cliente.
-Assim, o CEO da empresa solicita a equipe de análise de dados para saber: i) vendas totais por ano e sua média,
-                                                                          ii) proporção do custo de entrega por fabricante, 
-                                                                          iii) relão de fabricante, custo de entrega, veículo e valor de venda, e 
-                                                                          iv) custo de mão de obra por estado.
-Portanto, é feito a preparão dos dados através do software R e também por Power BI, e a criação de dashboard que responde às perguntas do CEO em power BI. 
