@@ -6,14 +6,8 @@
 # Me siga no linkedln: linkedin.com/in/oscar-dataanalysis-datascience
 #------------------------------------------------------------------------------#
 
-
-
 # apagar variaveis
 rm(list = ls())
-
-# local
-path <- "C:/Users/oscar/Desktop/R_Python_SQL_PBI/power_bi/cap02"
-setwd(path)
 
 # pacotes
 library(tidyverse)
