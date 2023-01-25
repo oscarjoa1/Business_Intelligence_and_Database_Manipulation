@@ -1,0 +1,235 @@
+---
+title: "Previsão, decodificação e predição do estado "
+author: "Oscar Jose Ospino Ayala RA:161391"
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Os modelos HMMs fornecem de forma conveniente as distribuições condicionais e distribuições de previsões. Estas são úteis, por exemplo, para verificar *outlier* e fazer previsões intervalares. Para o objetivo de interesse, se realiza o cálculo da distribuição condicional da observação no tempo *t* dadas as observações em todos os outros momentos, e que permite derivar a distribuição de previsão de um HMM. Logo se demostra como, dado o HMM e as observações, se podem obter informações (deduções) sobre os estados ocultos da Cadeia de Markov (CM) subjacente, o que se conhece como *decodificação*.
+
+A abordagem a continuação se focaliza no caso discreto e no caso em que a Cadeia de Markov $\{S_{t}, t=1,2,\cdots,n\}$ é homogênea mas não estacionária. Claro que os resultados também valem no caso especial em que a cadeia de Markov é estacionária, assim como para o caso continuo substituindo a função de probabilidade (*fp*) pela função de densidade de probabilidade (*fdp*). Lembre-se que uma CM com matriz de transição de probabilidade $\boldsymbol{\Gamma}$ é dita ter distribution estacionária $\boldsymbol{\delta}$ se $\boldsymbol{\delta} \boldsymbol{\Gamma}=\boldsymbol{\delta}$ e $\boldsymbol{\delta} \mathbf{1}^{\prime}=1$. 
+
+
+## 3.1 Probabilidade de avanço (forward) e de atraso (backward).
+
+Lembre-se que para um modelo HMM como descrito na **seção 1 e 2** com serie temporal $\{Y_{t}, t=1,2, \cdots ,n\}$ e CM subjacente homogênea mas não estacionária $\{S_{t}, t=1,2, \cdots, n\}$ as probabilidades de avanço (forward) $\boldsymbol{\alpha_{t}}$ e retrocesso (backward) $\boldsymbol{\beta_{t}}$, foram expressas como em (48) e (49),
+
+$$
+\boldsymbol{\alpha}_{t}=\boldsymbol{\delta}\mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right) \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{t}\right)=\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \prod_{j=2}^{t} \boldsymbol{\Gamma} \mathbf{P}\left(y_{j}\right), \quad \text{(48)}
+$$
+$$
+\boldsymbol{\beta}_{t}^{\prime}=\boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+2}\right) \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \mathbf{1}^{\prime}=\left(\prod_{=t+1}^{n} \boldsymbol{\Gamma} \mathbf{P}\left(x_{j}\right)\right) \mathbf{1}^{\prime}, \quad \text{(49)}
+$$
+
+Observe que: i)$\boldsymbol{\alpha}_{t}=\left(\alpha_{t}(1), \cdots, \alpha_{t}(m)\right)$ é um vetor linha *1 x m*, $\alpha_{t}(i)=\operatorname{P}\left(\mathbf{Y}_{t}=\mathbf{y}_{t}, S_{t}=i\right)$  que pode ser interpretado como a probabilidade da história do HMM até o tempo *t* e da Cadeia de Markov estar no estado $i=\{1,2,\cdots,m\}$ no tempo *t* $\boldsymbol{\beta}^{\prime}_{t}=\left(\beta_{t}(1), \cdots, \beta_{t}(m)\right)^{\prime}$ é um vetor coluna *m x 1*, $\beta_{t}(i)=\operatorname{P}\left(\mathbf{Y}^{n}_{t+1}=\mathbf{y}_{t+1}^{n} \mid S_{t}=i\right)$ com interpretação similar, a probabilidade das futuras observações dado que a CM está no estado *i* no período *t*,onde $\mathbf{Y}_{a}^{b}$ denotes o vetor $\left(Y_{a}, Y_{a+1}, \ldots, Y_{b}\right)$; ii) com a convenção de que um produto vazio e a matriz de identidade; caso $t = n$, portanto, produz $\boldsymbol{\beta}_{t}^{\prime}=\mathbf{1}^{\prime}$. 
+
+
+Usando-se $\boldsymbol{\beta}_{t}=\boldsymbol{\Gamma}\mathbf{P}\left(y_{t}\right)$, $t \in \{1,2, \cdots,n \}$ a verossimilhança em (16) pode ser escrita como,
+
+$$
+L_{n}=\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right)  \cdots \Gamma\mathbf{P}\left(y_{t}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \mathbf{P}\left(y_{t+2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \mathbf{1}^{\prime}= \mathbf{\delta}\mathbf{P}\left(y_{1}\right)\boldsymbol{\beta}_{2} \cdots\boldsymbol{\beta}_{t}\boldsymbol{\beta}_{t+1}\boldsymbol{\beta}_{t+2}\cdots\boldsymbol{\beta}_{n}\mathbf{1}^{\prime} \quad \text{(50)}
+$$
+
+Através de (48) e (49) a expressão (50) também é dada por,
+
+$$
+L_{n}= \boldsymbol{\alpha_{t}}\boldsymbol{\beta^{\prime}_{t}} \quad \text{(51)}
+$$
+A equação (51) implica que a verossiilhança pode ser dada pela multiplicação do vetor das probabilidade de avanço até o período $t$ vecez o vetor de probabilidade de atraso desde o período $t+1$ até $n$. Para o caso particular, $t=n$, tem-se $L_{n}=\boldsymbol{\alpha}_{n}\boldsymbol{\beta}^{\prime}_{n}=\boldsymbol{\alpha}_{n}\mathbf{1}^{\prime}$, isto é, a verossimilhança está dada pelas probabilidade de avanço até o período $n$.
+
+
+## 3.2 Distribuições condicional
+
+Considere a  notação $\mathbf{Y}^{(-t)}$ para a serie temporal excluindo a v.a no tempo *t* e $\mathbf{y}^{(-t)}$ para as observações em todos os momentos diferentes de *t*, isto é,
+
+
+$$
+\mathbf{Y}^{(-t)} \equiv\left(Y_{1}, \ldots, Y_{t-1}, Y_{t+1}, \ldots, Y_{n}\right)\\ \qquad \quad \mathbf{y}^{(-t)} \equiv \left(y_{1}, \ldots, y_{t-1}, y_{t+1}, \ldots, y_{n}\right) \quad \text{(52)}
+$$
+
+Usando-se os resultados (48) - (51) e a definição que a *verossimilhança associada a um vetor aleatório é igual a função de probabilidade conjunta do vetor*, segui para $t=\{1,2,\cdots,n\}$,
+
+$$
+\operatorname{P}\left(Y_{t}=y \mid \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right) = \frac{\operatorname{P}\left(Y_{t}=y, \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right)}{\operatorname{P}\left( \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right)}=\frac{\operatorname{P}\left( \mathbf{Y}_{t}=\mathbf{y}_{t}\right)}{\operatorname{P}\left( \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right)} \quad \text{(52)}
+$$
+$$
+\operatorname{P}\left(Y_{t}=y \mid \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right) = \frac{L_{n}}{L_{-t}}=\frac{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right)  \cdots \Gamma\mathbf{P}\left(y\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \mathbf{P}\left(y_{t+2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \mathbf{1}^{\prime}}{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \mathbf{P}\left(y_{t+2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \mathbf{1}^{\prime}} \quad \text{(53)}
+$$
+
+$$
+\operatorname{P}\left(Y_{t}=y \mid \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right) = \frac{\boldsymbol{\alpha}_{t-1}\Gamma\mathbf{P}\left(y\right)\boldsymbol{\beta^{\prime}_{t}}}{\boldsymbol{\alpha}_{t-1}\Gamma\boldsymbol{\beta^{\prime}_{t}}}\propto \boldsymbol{\alpha}_{t-1} \boldsymbol{\Gamma} \mathbf{P}(y) \boldsymbol{\beta}_{t}^{\prime} \quad \text{(54)}
+$$
+
+As distribuições condicionais acima são razões de duas verossimilanças de um HMM: o numerador é a verossimilhança das observações, exceto que a observação $y_{t}$ é substituída por *y*, e o denominador é a verossimilhança das observações, exceto que $y_{t}$ é tratado como ausente.
+
+A probabilidade condicional pode ser expressa como uma mistura das distribuições de probabilidade de *m* estado-dependentes. Em ambos equações (53) e (54) a probabilidade condicional necessária tem o seguinte forma: um vetor linha multiplicado *1 × m* pela matriz diagonal $\mathbf{P}(x)=\operatorname{diag}\left(p_{1}(y), \ldots, p_{m}(y)\right)$, multiplicado por um vetor coluna *m x 1*. Segue-se, para $t = 1, 2 ,\cdots, n$ que,
+
+  
+$$
+\operatorname{P}\left(Y_{t}=y \mid \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right) \propto \sum_{i=1}^{m} d_{i}(t) p_{i}(y) \qquad \text{(55)}
+$$
+
+Note que em (55), $d_{i}(t)$ é o producto da *i*th entrada de um vetor $\boldsymbol{\alpha}_{t-1} \boldsymbol{\Gamma}$ e a *i*th entrada de um vetor $\boldsymbol{\beta}_{t} ;$ logo, no caso de (54), este é um produto da *i*th entrada do vetor $\boldsymbol{\delta}$ e o *i*th entrada do $\boldsymbol{\beta}_{1}$. Então,
+
+$$
+\operatorname{P}\left(Y_{t}=y \mid \mathbf{Y}^{(-t)}=\mathbf{y}^{(-t)}\right)=\sum_{i=1}^{m} w_{i}(t) p_{i}(y), \quad \text{(56)}
+$$
+Onde a probabilidade de mistura $w_{i}(t)=d_{i}(t) / \sum_{j=1}^{m} d_{j}(t)$ são funções das observações $\mathbf{y}^{(-t)}$ e dos parâmetros do modelo. 
+
+## 3.3 Distribuições das previsões
+  
+Deseja-se obter a distribuição condicional de $Y_{n+h} \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}$,  onde $\boldsymbol{Y}_{n}=(Y_{1}, Y_{2}, \cdots, Y_{n})$ e *h* é denominado horizonte de previsão. A abordagem para obter estas distribuições é semelhante ao usado no cálculo da distribuição condicional de um HMM. 
+
+Lembre, que as equações de  Chapman-Kolmogorov inplicam que, para todo $h \in \mathbb{N}$,
+
+$$
+\boldsymbol{\Gamma}(h)=\boldsymbol{\Gamma}(1)^{h} \quad \text{(57)}
+$$
+Logo, através da equação (52), (53) e (57) se tem,
+
+$$
+\operatorname{P}\left(Y_{n+h}=y \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right) = \frac{\operatorname{P}\left(Y_{n+h}=y, \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right)}{\operatorname{P}\left( \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right)} \quad \text{(58)}
+$$
+$$
+\operatorname{P}\left(Y_{n+h}=y \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right) =\frac{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right)  \cdots \Gamma\mathbf{P}\left(y\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \mathbf{P}\left(y_{t+2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \boldsymbol{\Gamma}^{h} \mathbf{P}\left(y\right)   \mathbf{1}^{\prime}}{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\Gamma} \mathbf{P}\left(y_{2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{t+1}\right) \mathbf{P}\left(y_{t+2}\right)  \cdots \boldsymbol{\Gamma} \mathbf{P}\left(y_{n}\right) \mathbf{1}^{\prime}} \quad \text{(59)}
+$$
+
+$$
+\operatorname{P}\left(Y_{n+h}=y \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right)=\frac{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\beta_{2}}\cdots\boldsymbol{\beta_{n}}\boldsymbol{\Gamma}^{h} \mathbf{P}\left(y\right)\mathbf{1}^{\prime}}{\boldsymbol{\delta} \mathbf{P}\left(y_{1}\right) \boldsymbol{\beta_{2}}\cdots\boldsymbol{\beta_{n}}\mathbf{1}^{\prime}}=\frac{\boldsymbol{\alpha}_{n}\boldsymbol{\Gamma}^{h} \mathbf{P}\left(y\right)\mathbf{1}^{\prime}}{\boldsymbol{\alpha}_{n}\mathbf{1}^{\prime}} \quad \text{(60)}
+$$
+
+Observe, que mais uma vez a probabilidade condicional é o resultado da razão entre verossimilhanças. Logo, empleando-se a notação em (30) $w_{t}=\boldsymbol{\alpha}_{t} \mathbf{1}^{\prime}$ e $\phi_{t}=\frac{\boldsymbol{\alpha}_{t}}{w_{t}}$, $t=\{1,2, \cdots, n\}$ (60) pode ser escrita como,
+
+$$
+\operatorname{P}\left(Y_{n+h}=y \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right)=\boldsymbol{\phi}_{n}\boldsymbol{\Gamma}^{h} \mathbf{P}\left(y\right)\mathbf{1}^{\prime} \quad \text{(61)} 
+$$
+Mais uma vez, a distribuição de previsão pode ser escrita como mistura de distribuições de probabilidade estado-dependentes, 
+
+$$
+\operatorname{P}\left(Y_{n+h}=y \mid \boldsymbol{Y}_{n}=\boldsymbol{y}_{n}\right)=\sum_{i=1}^{m} \xi_{i}(h) p_{i}(y),\quad  \text{(62)}
+$$
+Onde o peso $\xi_{i}(h)$ é o *i*th entrada do vetor $\boldsymbol{\phi}_{n} \boldsymbol{\Gamma}^{h}$.
+
+Uma vez que toda a distribuição de probabilidade da previsão é conhecida, é possível fazer previsões de intervalo, e não apenas previsões pontuais. 
+
+À medida que o horizonte de previsão *h* aumenta, a distribuição da previsão converge para a distribuição marginal do HMM estacionário, ou seja,
+
+$$
+\lim _{h \rightarrow \infty} \operatorname{P}\left(Y_{n+h}=y \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right)=\lim _{h \rightarrow \infty} \boldsymbol{\phi}_{n} \boldsymbol{\Gamma}^{h} \mathbf{P}(y) \mathbf{1}^{\prime}=\delta^{*} \mathbf{P}(y) \mathbf{1}^{\prime} \quad  \text{(63)}
+$$
+
+Onde, $\boldsymbol{\delta}\text{*}$ denota a distribuição estacionária da Cadeia de Markov e não a distribuição inicial $\boldsymbol{\delta}$. O limite segue da observação de que, para qualquer vetor linha $\boldsymbol{\eta}$  não negativo cujas entradas somam 1, o vetor $\boldsymbol{\eta}\boldsymbol{\Gamma}h$ se aproxima da distribuição estacionária da cadeia de Markov como *h* tende a $\infty$, desde que o Markov a cadeia satisfaz as *condições usuais de regularidade de irredutibilidade e aperiodicidade*. Finalmente, às vezes, a previsão a distribuição se aproxima de sua distribuição limite apenas *lentamente*.
+
+## 3.4 Decodificação 
+
+O interesse é determinar os estados da CM que são mais prováveis (sob o modelo em estudo) de ter dado origem à sequência de observação. Existem dois tipos de decodificação: i) *decodificação local* do estado no tempo *t* que se refere à determinação daquele estado que é mais provável naquele momento, ii) *decodificação global* se refere à determinação da sequência de estados mais provável.
+
+
+### 3.4.1 Probabilidade de estados e decodificação local
+
+Considere $\boldsymbol{\alpha}_{t}$ e $\boldsymbol{\beta}^{\prime}_{t}$ dadas em (48) e (49), com suas componentes $\alpha_{t}(i)$ e $\beta_{t}(i)$, $i=\{1,2, \cdots, m\}$, logo se tem a seguinte proposição (a prova esta disponível em Zucchini et al. (2016)), 
+
+Para $t=1,2, \ldots, n$ e $i=1,2, \ldots, m$
+$$
+\alpha_{t}(i) \beta_{t}(i)=\operatorname{Pr}\left(\mathbf{Y}_{n}=\mathbf{y}_{n}, S_{n}=i\right)  \quad  \text{(64)}
+$$
+
+Então, a distribuição condicional de $S_{t}$ dado as observações podem ser obtidas, para $i=\{1,2, \cdots, m\}$, como,
+
+$$
+\begin{aligned}
+\operatorname{P}\left(S_{t}=i \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right) &=\frac{\operatorname{P}\left(S_{t}=i, \mathbf{Y}_{n}=\mathbf{y}_{n}\right)}{\operatorname{P}\left(\mathbf{Y}_{n}=\mathbf{y}_{n}\right)} \quad \text{[prob. condicional]}\\
+&=\frac{\alpha_{t}(i) \beta_{t}(i)}{L_{n}}=\frac{\alpha_{t}(i) \beta_{t}(i)}{\boldsymbol{\alpha}_{n}\mathbf{1}^{\prime}}=\frac{\alpha_{t}(i) \beta_{t}(i)}{w_{n}(\boldsymbol{\phi}_{n}\mathbf{1}^{\prime})}=\frac{\alpha_{t}(i) \beta_{t}(i)}{w_{n}} \quad \text{[por (32), (50) e (64)]} \\
+&=\frac{\alpha_{t}(i) \beta_{t}(i)}{\prod_{t=1}^{n}\left(w_{t} / w_{t-1}\right)} \quad \text{(65)}
+\end{aligned}
+$$
+Onde, $w_{t}=\boldsymbol{\alpha}_{t}\mathbf{1}^{\prime}$, i.e, é um escalar. 
+
+Para cada vez $t \in \{1,2,  \cdots, n\}$ pode-se, portanto, determinar a distribuição do estado $C_{t}$, dadas as observações $\mathbf{y}_{t}$, que para *m* estados é uma distribuição de probabilidade discreta com suporte $\{1,2,  \cdots, m\}$.
+
+Para cada $t \in \{1,2,  \cdots, n\}$ o estado mais provável $i_{t}\text{*}$ dada as observações, é definida por,
+
+$$
+i_{t}^{*}=\underset{i=1, \ldots, m}{\operatorname{argmax}} \operatorname{P}\left(S_{t}=i \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right) \quad \text{(66)}
+$$
+Esta abordagem determina o estado mais provável separadamente para cada *t* pela maximização da probabilidade condicional $\operatorname{P}\left(S_{t}=i \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right)$ e, portanto, é chamado de decodificação local.
+
+### 3.4.2 Decodificação global
+
+Em muitas aplicações se procura a sequência de estados $s_{1},\cdots,s_{n}$ que maximiza a probabilidade condicional,
+
+$$
+\operatorname{P}\left(\mathbf{S}_{n}=\mathbf{s}_{n} \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right) \quad \text{(67)}
+$$
+Ou equivalente, e mais conveniente, a função de probabilidade conjunta,
+
+$$
+\operatorname{P}\left(\mathbf{S}_{n}=\mathbf{s}_{n} , \mathbf{Y}_{n}=\mathbf{y}_{n}\right)=P\left(S_{1}=s_{1}\right) \prod_{k=2}^{n} P\left(S_{k}=s_{k} / S_{k-1}= s_{k-1}\right) \prod_{k=1}^{n} P\left(Y_{k}=y_{k} / S_{k}=s_{k}\right) \quad \text{(68)}
+$$
+
+Maximizando (67) sobre todas as sequências de estado possíveis $s_{1},s_{2},\cdots,s_{n}$ por força bruta envolveria avaliações da função $m^n$, o que é claramente inviável, exceto para *n* muito pequeno. Felizmente, pode-se usar, em vez disso, um algoritmo de programação dinâmica eficiente para determinar a sequência de estados mais provável, ou seja, o algoritmo de Viterbi (Viterbi, 1967; Forney, 1973).
+
+Inicialização: Para $t=1$
+$$
+\xi_{1 i}=\operatorname{P}\left(S_{1}=i, Y_{1}=y_{1}\right)=\operatorname{P}\left(S_{1}=i\right) \operatorname{P}\left(Y_{1}=y_{1} \mid S_{1}=i \right)=\delta_{i} p_{i}\left(y_{1}\right), \quad \text{(69)}
+$$
+
+
+Atualização: para $t=2,3, \ldots, n$,
+$$
+\xi_{t i}=\max _{s_{1}, s_{2}, \cdots, s_{t-1}} \operatorname{Pr}\left(\mathbf{S}_{t-1}=\mathbf{i}_{t-1}, S_{t}=i, \mathbf{Y}_{t}=\mathbf{y}_{t}\right), \quad \text{(70)}
+$$
+
+$\xi_{t i}$ é a verossimilhança da distribuição conjunta das observações $\mathbf{Y}_{t}=\mathbf{y}_{t}$, a sequência de estados $S_{1}=i_{1}, \cdots, S_{t-1}=i_{t-1}$ e o estado $S_{t}=i$, maximizado em todas as sequências de estados possíveis $i_{1}, \cdots, i_{t-1}$. 
+
+Pode-se provar que as probabilidades $\xi_{t i}$ satisfazem a seguinte recursão para $t \in\{2, \cdots, n-1\}:$
+
+$$
+\xi_{t j}=\left(\max _{i}\left(\xi_{t-1, i} \gamma_{i j}\right)\right) p_{j}\left(y_{t}\right) \text{(71)}
+$$
+
+Isso fornece um meio eficiente de calcular a matriz *T × m* de valores $\xi_{t i}$, pois o esforço computacional é linear em *T*. A sequência de maximização necessária de estados $i_{1}, i_{2}, \cdots, i_{n}$ ele pode então ser determinado recursivamente a partir de,
+
+$$
+i_{T}=\underset{i=1, \ldots, m}{\operatorname{argmax}} \xi_{n i} \quad \text{(72)}
+$$
+E, para $t=T-1, T-2, \ldots, 1$, apartir de,
+
+$$
+i_{t}=\underset{i=1, \ldots, m}{\operatorname{argmax}}\left(\xi_{t i} \gamma_{i, i_{t+1}}\right) \quad \text{(73)}
+$$
+
+Observe que, uma vez que a quantidade a ser maximizada na decodificação global é simplesmente um produto de probabilidades (em oposição a uma soma de tais produtos), pode-se escolher maximizar seu logaritmo reescrito em termos dos logaritmos das probabilidades. 
+
+## 3.5 Previsão de estado
+
+O método de decodificação local onde alguém estava interessado em um dos estados passados também pode ser usado para fornecer a distribuição condicional do estado $S_{t}$ para $t > n$, ou seja, realizar a "previsão do estado" o que permite obter informações sobre estados no futuro. 
+
+Dada as observações $y_{1}, y_{2}, \cdots, y_{n}$ as seguintes declarações podem ser feitas sobre estados passados, presentes ou futuros a partir da decodificação local,
+
+$$
+\begin{aligned}
+L_{n} \operatorname{Pr}\left(S_{t}\right.&\left.=i \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right)= \\
+&=\left\{\begin{array}{lll}
+\boldsymbol{\alpha}_{n} \boldsymbol{\Gamma}^{t-n} \mathbf{e}_{i}^{\prime} & \text { for } t>n & \text {previsão do estado} \\
+\alpha_{n}(i) & \text { for } t=n & \text {filtro} \\
+\alpha_{t}(i) \beta_{t}(i) & \text { for } 1 \leq t<n & \text {alisamento}
+\end{array}\right.\quad \text{(74)}
+\end{aligned}
+$$
+
+Onde $\boldsymbol{e}_{i}=(0,\cdots,0,1,0,\cdots,0)$ tem um na i-ésima posição apenas, assim $\boldsymbol{\Gamma}^{t-n} \mathbf{e}_{i}^{\prime}$ denota a i-ésima coluna da matriz $\boldsymbol{\Gamma}^{t-n}$. As partes de ‘filtragem’ e ‘suavização’ (para estados presentes ou passados) são idênticas às probabilidades de estado como abordado anteiormente. A parte de 'previsão de estado' é simplesmente uma generalização para $t> T$, o futuro, e pode ser rescrito como,
+
+$$
+\operatorname{P}\left(S_{n+h}=i \mid \mathbf{Y}_{n}=\mathbf{y}_{n}\right)=\boldsymbol{\alpha}_{n} \boldsymbol{\Gamma}^{h} \mathbf{e}_{i}^{\prime} / L_{n}=\boldsymbol{\phi}_{n} \boldsymbol{\Gamma}^{h} \mathbf{e}_{i}^{\prime}, \quad \text{(75)} 
+$$
+Com $\phi_{n}=\alpha_{n} / \alpha_{n} \mathbf{1}^{\prime}$.
+
+
+
+
+
