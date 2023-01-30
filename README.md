@@ -1,6 +1,6 @@
 # Propósito
 
-Este repositório aborda diferentes estudos de caso que requerem diferentes níveis de solução.
+Este repositório aborda vários estudos de caso que requerem diferentes níveis de solução.
 Os principais tópicos de manipulação de banco de dados e inteligência de negócios são abordados.
 Aqui apresento as atividades de importação, preparação e criação do dashboard, utilizando os softwares: R, SQL server e PowerBI.
 
