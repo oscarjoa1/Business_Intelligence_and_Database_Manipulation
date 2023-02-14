@@ -1,6 +1,6 @@
-📌 Projeto de Análise de campanhas de #marketing com o #powerbi e o #rstudio (#posit).
+📌 Projeto de Análise de campanhas de **marketing** com o **powerbi** e o **rstudio** (**posit**).
 
-📌 Foram 4 Dashboards, mais de 10 elementos visuais 📈, customizações, formatações, correções nos dados e diferentes recursos do #powerbi e do #rstudio ⚙.
+📌 Foram 4 Dashboards, mais de 10 elementos visuais 📈, customizações, formatações, correções nos dados e diferentes recursos do **powerbi** e do **rstudio** ⚙.
 
 📌 Os relatórios foram divididos em 4 visualizações 📊:
 • Visão do Cliente.
