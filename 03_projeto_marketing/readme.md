@@ -12,3 +12,16 @@
 
 • Visão dos Padrões de Compra no Ponto de Venda (País).
 
+📌 A estrutura dos documentos disponivilizados são:
+
+•  DadosMarketing.csv, dados do projeto. 
+
+•  01_prepacao_dados.R, que se refere aos códigos **r** de mineração de dados do projeto. 
+
+•  02_dashboard_marketing.pbix, que contém os dados preparados e os dashboards construídos.
+
+•  dashboard.png, imagem dos quatro dashboards.
+
+
+
+
