@@ -14,10 +14,10 @@
 
 📌 Os documentos disponíveis são: 
 
-• *Custos.csv*, dados do caso de estudo. 
+• Dados do caso de estudo, *Custos.csv*, *Produtos.xlsx* e *Vendas.xlsx* 
 
-• *02_scripts_custos.R*, scripts em *r* da mineração de dados. 
+• Scripts em *r* da mineração de dados, *02_scripts_custos.R*, 
 
-• *03_cap04_powerBI.pbix*, dados e dashboard em *Power BI*. 
+• Dados e dashboard em *Power BI*, *03_cap04_powerBI.pbix*, 
 
-• *04_dashboard.png*, imagem do dashboard produzido. 
+• Imagem do dashboard produzido, *04_dashboard.png*
