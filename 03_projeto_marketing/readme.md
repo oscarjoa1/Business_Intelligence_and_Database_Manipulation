@@ -1,4 +1,4 @@
-# Projeto de Análise de campanhas de **marketing** com o **powerbi** (DAX) e o  **r** (**rstudio** - **posit**).)
+# Projeto de Análise de campanhas de **marketing** com o **powerbi** (DAX) e o  **r** (**rstudio** - **posit**).
 
 📌 Foram 4 Dashboards, mais de 10 elementos visuais 📈, customizações, formatações, correções nos dados e diferentes recursos do **powerbi** e do **rstudio** ⚙.
 
