@@ -1,4 +1,4 @@
-# Projeto de Análise de campanhas de **marketing** com o **powerbi** e o **rstudio** (**posit**).
+# Projeto de Análise de campanhas de **marketing** com o **powerbi** (DAX) e o  **r** (**rstudio** - **posit**).)
 
 📌 Foram 4 Dashboards, mais de 10 elementos visuais 📈, customizações, formatações, correções nos dados e diferentes recursos do **powerbi** e do **rstudio** ⚙.
 
@@ -14,13 +14,13 @@
 
 📌 A estrutura dos documentos disponivilizados são:
 
-•  *DadosMarketing.csv*, dados do projeto. 
+•  Dados do projeto, *DadosMarketing.csv*.
 
-•  *01_prepacao_dados.R*, que se refere aos códigos **r** de mineração de dados do projeto. 
+•  Códigos **r** de mineração de dados do projeto, *01_prepacao_dados.R*.
 
-•  *02_dashboard_marketing.pbix*, que contém os dados preparados e os dashboards construídos.
+•  Dados preparados e os dashboards construídos, *02_dashboard_marketing.pbix*.
 
-•  *dashboard.png*, imagem dos quatro dashboards.
+•  Imagem geraal dos quatro dashboards,*dashboard.png*.
 
 
 
