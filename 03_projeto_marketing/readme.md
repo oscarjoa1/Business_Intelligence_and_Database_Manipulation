@@ -20,7 +20,7 @@
 
 •  Dados preparados e os dashboards construídos, *02_dashboard_marketing.pbix*.
 
-•  Imagem geraal dos quatro dashboards,*dashboard.png*.
+•  Imagem geraal dos quatro dashboards, *dashboard.png*.
 
 
 
