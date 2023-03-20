@@ -1,12 +1,12 @@
-📊 Dashboard de análise de dados logísticos com #powerbi & #r criando medidas através de expressões #dax.
+# Dashboard Análise de Dados Logística
+
+📊 *Dashboard* de análise de dados logísticos com *powerbi* & *r* criando medidas através de expressões #dax.
 
 
-
-📌O dashboard fornecido por um cliente foi corrigido, analisando os erros e propondo soluções 👨‍💻.
-
+📌O dashboard fornecido por um cliente foi corrigido, analisando os erros e propondo soluções 👨‍💻. 
 
 
-📌 O Dashboard final mostra os seguintes KPIs de Logística:
+📌 O Dashboard final mostra os seguintes *KPIs* de Logística:
 
 - Total de Entregas no Prazo Por Canal de Entrega
 
@@ -20,8 +20,4 @@
 
 - Percentual de Entregas Por Status de Entrega
 
-
-
-Data Science Academy
-
-#datascience 
+📌 Os dados e o *dashboard* resultantes estão disponíveis para você.
